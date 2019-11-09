@@ -17,8 +17,7 @@ std::string RandomString(int _size) {
   a[_size] = '\0';
   std::string str = a;
   for (int i = 1; i < _size; i += 4) {
-    int b = rand() % prep.size();
-    str[i] = prep[b];
+    str[i] = prep[rand() % prep.size()];
   }
   return str;
 }
@@ -53,8 +52,7 @@ int GetCountInText(std::string str) {
   char *lch = new char[p];
   if (rank == 0) {
     lstr.insert(0, str, 0, p + r);
-  }
-  else {
+  } else {
     MPI_Status status;
     MPI_Recv(&lch[0], p, MPI_CHAR, 0, 0, MPI_COMM_WORLD, &status);
     lch[p] = '\0';
