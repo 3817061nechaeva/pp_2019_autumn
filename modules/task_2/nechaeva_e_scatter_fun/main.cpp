@@ -37,7 +37,7 @@ TEST(MPI_Scatter, int_to_int) {
     buf2.data(), scatter.size(), MPI_INT, root, MPI_COMM_WORLD);
 
   if (rank == 0) {
-    ASSERT_EQ(buf1,buf2);
+    ASSERT_EQ(buf1, buf2);
   }
 }
 
