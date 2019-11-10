@@ -124,7 +124,7 @@ TEST(MPI_Scatter, int_to_char) {
   double t = MPI_Wtime();
   MPI_Scatter(buf.data(), buf.size() / size, MPI_INT, scatter.data(), recv.size(), MPI_CHAR, root, MPI_COMM_WORLD);
   t = MPI_Wtime() - t;
-  std::cout << "WORK NOT MY ALGORITM=" << t<<std::endl;
+  std::cout << "WORK NOT MY ALGORITM=" << t << std::endl;
 
   MPI_Gather(recv.data(), recv.size(), MPI_CHAR,
     buf1.data(), recv.size(), MPI_CHAR, root, MPI_COMM_WORLD);
