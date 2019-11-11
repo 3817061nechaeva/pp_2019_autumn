@@ -43,7 +43,7 @@ TEST(MPI_Scatter, int_to_int) {
 TEST(MPI_Scatter, double_to_float) {
   const int root = 0;
   int rank, size;
-  int k = 1.2;
+  double k = 1.2;
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
@@ -87,7 +87,7 @@ TEST(MPI_Scatter, throw_when_error_count_and_root) {
 TEST(MPI_Scatter, char_to_int) {
   const int root = 0;
   int rank, size;
-  int k = 'a';
+  char k = 'a';
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
@@ -118,7 +118,7 @@ TEST(MPI_Scatter, char_to_int) {
 TEST(MPI_Scatter, double_to_int) {
   const int root = 0;
   int rank, size;
-  int k = 1.2;
+  double k = 1.2;
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
@@ -149,7 +149,7 @@ TEST(MPI_Scatter, double_to_int) {
 TEST(MPI_Scatter, int_to_char) {
   const int root = 0;
   int rank, size;
-  int k = 1.2;
+  int k = 1;
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
