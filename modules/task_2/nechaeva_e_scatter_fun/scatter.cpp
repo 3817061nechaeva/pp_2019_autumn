@@ -10,8 +10,8 @@ int Scatter(void* send_data, int send_count, MPI_Datatype send_datatype, void* r
   MPI_Comm_size(communicator, &size);
   MPI_Comm_rank(communicator, &rank);
 
-  MPI_Type_extent(send_datatype, &elemSizes);
-  MPI_Type_extent(recv_datatype, &elemSizer);
+  MPI_Type_size(send_datatype, &elemSizes);
+  MPI_Type_size(recv_datatype, &elemSizer);
   int k = _msize(send_data) / elemSizes;
   if (k < size || k < size*send_count)
     throw - 1;
