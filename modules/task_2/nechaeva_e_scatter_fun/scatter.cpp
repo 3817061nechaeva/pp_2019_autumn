@@ -4,7 +4,9 @@
 #include "../../../modules/task_2/nechaeva_e_scatter_fun/scatter.h"
 
 int Scatter(void* send_data, int send_count, MPI_Datatype send_datatype, void* recv_data,
-  int recv_count, MPI_Datatype recv_datatype, int root, MPI_Comm communicator) {
+                      int recv_count, MPI_Datatype recv_datatype, int root, MPI_Comm communicator) {
+  if (send_count <= 0 || recv_count <= 0 || root < 0)
+    throw - 1;
   int size, rank;
   int elemSizer, elemSizes;
   MPI_Comm_size(communicator, &size);
@@ -12,9 +14,7 @@ int Scatter(void* send_data, int send_count, MPI_Datatype send_datatype, void* r
 
   MPI_Type_size(send_datatype, &elemSizes);
   MPI_Type_size(recv_datatype, &elemSizer);
-  int k = _msize(send_data) / elemSizes;
-  if (k < size || k < size*send_count)
-    throw - 1;
+
   double t = MPI_Wtime();
   if (rank == root) {
     memcpy(recv_data, reinterpret_cast<char*>(send_data) + root * send_count * elemSizer, send_count * elemSizes);
@@ -30,7 +30,9 @@ int Scatter(void* send_data, int send_count, MPI_Datatype send_datatype, void* r
     MPI_Status status;
     MPI_Recv(recv_data, recv_count, recv_datatype, root, 0, communicator, &status);
   }
+
   t = MPI_Wtime() - t;
-  std::cout << "WORK MY ALGORITM= " << t;
+  std::cout << "WORK MY ALGORITM= " << t << std::endl;
   return MPI_SUCCESS;
 }
+

@@ -2,7 +2,6 @@
 #ifndef MODULES_TASK_2_NECHAEVA_E_SCATTER_FUN_SCATTER_H_
 #define MODULES_TASK_2_NECHAEVA_E_SCATTER_FUN_SCATTER_H_
 
-#include <malloc.h>
 #include <string.h>
 #include <iostream>
 
