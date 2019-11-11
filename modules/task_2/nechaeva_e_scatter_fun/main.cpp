@@ -81,7 +81,8 @@ TEST(MPI_Scatter, throw_when_error_count_and_root) {
   std::vector<int> recv;
   std::vector<int> scatter;
 
-  ASSERT_ANY_THROW(Scatter(buf.data(), buf.size() / 3, MPI_INT, recv.data(), buf.size() / 3, MPI_INT, root, MPI_COMM_WORLD));
+  ASSERT_ANY_THROW(Scatter(buf.data(), buf.size() / 3, MPI_INT, recv.data(), buf.size() / 3, 
+                    MPI_INT, root, MPI_COMM_WORLD));
   ASSERT_ANY_THROW(Scatter(buf.data(), 0, MPI_INT, recv.data(), 0, MPI_INT, 0, MPI_COMM_WORLD));
 }
 TEST(MPI_Scatter, char_to_int) {
