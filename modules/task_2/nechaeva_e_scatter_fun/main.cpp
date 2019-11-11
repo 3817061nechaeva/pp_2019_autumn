@@ -73,7 +73,6 @@ TEST(MPI_Scatter, double_to_float) {
 }
 TEST(MPI_Scatter, throw_when_error_count_and_root) {
   const int root = -1;
-  int k = 0;
 
   std::vector<int> buf(1000);
   std::vector<int> buf1(1000);
