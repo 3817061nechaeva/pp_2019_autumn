@@ -5,7 +5,7 @@
 #include <vector>
 #include "../../../modules/task_3/nechaeva_e_razr_sort/razr_sort.h"
 
-void RazrSort(std::vector<double> src, std::vector<double> &dest, int byte, int size) {
+std::vector<double> RazrSort(std::vector<double> src, std::vector<double> dest, int byte, int size) {
   unsigned char *mas = (unsigned char *)src.data();
   int counter[256] = { 0 };
   int tek = 0;
@@ -23,9 +23,10 @@ void RazrSort(std::vector<double> src, std::vector<double> &dest, int byte, int 
     dest[counter[mas[8 * i + byte]]] = src[i];
     counter[mas[8 * i + byte]]++;
   }
+  return dest;
 }
 
-void RazrSortLast(std::vector<double> src, std::vector<double> &dest, int byte, int size) {
+std::vector<double> RazrSortLast(std::vector<double> src, std::vector<double> dest, int byte, int size) {
   unsigned char *mas = (unsigned char *)src.data();
   int counter[256] = { 0 };
   int tek = 0;
@@ -51,20 +52,22 @@ void RazrSortLast(std::vector<double> src, std::vector<double> &dest, int byte, 
       dest[counter[mas[8 * i + byte]]] = src[i];
     }
   }
+  return dest;
 }
 
-void DoubleSortWin(std::vector<double> &src, int size) {
+std::vector<double> DoubleSortWin(std::vector<double> src, int size) {
   std::vector<double> dest(size);
 
   for (int i = 0; i < 7; i++) {
-    RazrSort(src, dest, i, size);
+   dest = RazrSort(src, dest, i, size);
     std::swap(src, dest);
   }
-  RazrSortLast(src, dest, 7, size);
+ dest = RazrSortLast(src, dest, 7, size);
   std::swap(src, dest);
+  return src;
 }
 
-void DoubleSortLin(std::vector<double> src, int size) {
+std::vector<double> DoubleSortLin(std::vector<double> src, int size) {
   std::vector<double> dest(size);
 
   for (int i = 7; i > 0; i--) {
@@ -72,9 +75,10 @@ void DoubleSortLin(std::vector<double> src, int size) {
     std::swap(src, dest);
   }
   RazrSort(dest, src, 0, size);
+  return dest;
 }
 
-void Rand(std::vector<double> &mas, int size) {
+std::vector<double> Rand(std::vector<double> mas, int size) {
   std::mt19937 generator;
   std::random_device device;
   generator.seed(device());
@@ -84,6 +88,7 @@ void Rand(std::vector<double> &mas, int size) {
     double f = distribution(generator);
     mas[i] = f;
   }
+  return mas;
 }
 
 bool Tru(std::vector<double> mas, int size) {
@@ -97,7 +102,7 @@ bool Tru(std::vector<double> mas, int size) {
   return true;
 }
 
-void Merge(std::vector<double> &mas1, std::vector<double> mas2, int size1, int size2) {
+std::vector<double> Merge(std::vector<double> mas1, std::vector<double> mas2, int size1, int size2) {
   std::vector<double> temp(size1 + size2);
   int i = 0, j = 0;
   for (int k = 0; k < size1+size2; k++) {
@@ -119,10 +124,10 @@ void Merge(std::vector<double> &mas1, std::vector<double> mas2, int size1, int s
       j++;
     }
   }
-  mas1 = temp;
+  return temp;
 }
 
-int ParallSort(std::vector<double> &src, int size) {
+std::vector<double> ParallSort(std::vector<double> src, int size) {
   int nsize, nrank;
   MPI_Comm_size(MPI_COMM_WORLD, &nsize);
   MPI_Comm_rank(MPI_COMM_WORLD, &nrank);
@@ -147,9 +152,9 @@ int ParallSort(std::vector<double> &src, int size) {
     int a = size - p;
     for (int i = n; i < n + p; ++i)
       dest[i] = src[a++];
-    DoubleSortWin(dest, n + p);
+    dest = DoubleSortWin(dest, n + p);
   } else {
-    DoubleSortWin(dest, n);
+    dest = DoubleSortWin(dest, n);
   }
 
   int locsize = nsize;
@@ -161,48 +166,49 @@ int ParallSort(std::vector<double> &src, int size) {
         patner = nrank - static_cast<int>(pow(2.0, i));
         MPI_Send(dest.data(), n*static_cast<int>(pow(2.0, i)),
           MPI_DOUBLE, patner, 0, MPI_COMM_WORLD);
-        return 0;
+        return std::vector<double>(0);
       }  else {
         std::vector<double> temp(n*static_cast<int>(pow(2.0, i)));
         patner = nrank + static_cast<int>(pow(2.0, i));
         MPI_Status status;
         MPI_Recv(temp.data(), n*static_cast<int>(pow(2.0, i)), MPI_DOUBLE, patner, 0, MPI_COMM_WORLD, &status);
         if (nrank == 0) {
-          Merge(dest, temp, dest.size(), n*static_cast<int>(pow(2.0, i)));
-        } else
-          Merge(dest, temp, n*static_cast<int>(pow(2.0, i)), n*static_cast<int>(pow(2.0, i)));
+          dest = Merge(dest, temp, dest.size(), n*static_cast<int>(pow(2.0, i)));
+        } else {
+          dest = Merge(dest, temp, n*static_cast<int>(pow(2.0, i)), n*static_cast<int>(pow(2.0, i)));
+        }
       }
     } else {
       if ((nrank % static_cast<int>(pow(2.0, i + 1)) != 0) && (nrank != (locsize - 1)*static_cast<int>(pow(2.0, i)))) {
         patner = nrank - static_cast<int>(pow(2.0, i));
         MPI_Send(dest.data(), n*static_cast<int>(pow(2.0, i)),
           MPI_DOUBLE, patner, 0, MPI_COMM_WORLD);
-        return 0;
+        return std::vector<double>(0);
       } else if (nrank == (locsize - 1)*static_cast<int>(pow(2.0, i))) {
         MPI_Send(dest.data(), n*static_cast<int>(pow(2.0, i)),
           MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
-        return 0;
+        return std::vector<double>(0);
       } else {
         if (nrank == 0) {
           std::vector<double> temp(n*static_cast<int>(pow(2.0, i)));
           patner = (locsize - 1)*static_cast<int>(pow(2.0, i));
           MPI_Status status;
           MPI_Recv(temp.data(), n*static_cast<int>(pow(2.0, i)), MPI_DOUBLE, patner, 0, MPI_COMM_WORLD, &status);
-          Merge(dest, temp, dest.size(), n*static_cast<int>(pow(2.0, i)));
+          dest = Merge(dest, temp, dest.size(), n*static_cast<int>(pow(2.0, i)));
         }
         std::vector<double> temp(n*static_cast<int>(pow(2.0, i)));
         patner = nrank + static_cast<int>(pow(2.0, i));
         MPI_Status status;
         MPI_Recv(temp.data(), n*static_cast<int>(pow(2.0, i)), MPI_DOUBLE, patner, 0, MPI_COMM_WORLD, &status);
         if (nrank == 0) {
-          Merge(dest, temp, dest.size(), n*static_cast<int>(pow(2.0, i)));
-        } else
-          Merge(dest, temp, n*static_cast<int>(pow(2.0, i)), n*static_cast<int>(pow(2.0, i)));
+         dest =  Merge(dest, temp, dest.size(), n*static_cast<int>(pow(2.0, i)));
+        } else {
+          dest = Merge(dest, temp, n*static_cast<int>(pow(2.0, i)), n*static_cast<int>(pow(2.0, i)));
+        }
       }
     }
     locsize = locsize / 2;
     i++;
   }
-  src = dest;
-  return 0;
+  return dest;
 }
