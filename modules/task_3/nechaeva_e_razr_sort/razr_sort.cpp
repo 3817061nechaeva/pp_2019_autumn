@@ -1,6 +1,8 @@
 // Copyright 2019 Nechaeva Ekaterina
 #include <mpi.h>
 #include <random>
+#include <utility>
+#include <vector>
 #include "../../../modules/task_3/nechaeva_e_razr_sort/razr_sort.h"
 
 void RazrSort(std::vector<double> src, std::vector<double> &dest, int byte, int size) {
@@ -32,7 +34,6 @@ void RazrSortLast(std::vector<double> src, std::vector<double> &dest, int byte, 
     counter[mas[8 * i + byte]]++;
 
   for (int j = 255; j >= 128; j--) {
-    int b = counter[j];
     counter[j] += tek;
     tek = counter[j];
   }
@@ -72,18 +73,6 @@ void DoubleSortLin(std::vector<double> src, int size) {
   }
   RazrSort(dest, src, 0, size);
 }
-
-//void NameOC(std::vector<double> src, int size) {
-//  const char* env_p = getenv("OSTYPE");
-//  if (env_p == NULL)
-//  {
-//    env_p = getenv("windir");
-//    if (env_p != NULL)
-//      DoubleSortWin(src, size);
-//  }
-//  else if (strcmp(env_p, "linux") == 0)
-//    DoubleSortLin(src, size);
-//}
 
 void Rand(std::vector<double> &mas, int size) {
   std::mt19937 generator;
@@ -169,56 +158,53 @@ int ParallSort(std::vector<double> &src, int size) {
   int k = n+p;
   while (locsize > 1) {
     if (locsize % 2 == 0) {
-      if (nrank % (int)pow(2.0, i + 1) != 0) {
-        patner = nrank - (int)pow(2.0, i);
-        MPI_Send(dest.data(), n*(int)pow(2.0, i),
+      if (nrank % static_cast<int>(pow(2.0, i + 1)) != 0) {
+        patner = nrank - static_cast<int>(pow(2.0, i));
+        MPI_Send(dest.data(), n*static_cast<int>(pow(2.0, i)),
           MPI_DOUBLE, patner, 0, MPI_COMM_WORLD);
         return 0;
       }
       else {
-        std::vector<double> temp(n*(int)pow(2.0, i));
-        patner = nrank + (int)pow(2.0, i);
+        std::vector<double> temp(n*static_cast<int>(pow(2.0, i)));
+        patner = nrank + static_cast<int>(pow(2.0, i));
         MPI_Status status;
-        MPI_Recv(temp.data(), n*(int)pow(2.0, i), MPI_DOUBLE, patner, 0, MPI_COMM_WORLD, &status);
+        MPI_Recv(temp.data(), n*static_cast<int>(pow(2.0, i)), MPI_DOUBLE, patner, 0, MPI_COMM_WORLD, &status);
         if (nrank == 0) {
-          Merge(dest, temp, dest.size(), n*(int)pow(2.0, i));
-          k = k + n * (int)pow(2.0, i);
+          Merge(dest, temp, dest.size(), n*static_cast<int>(pow(2.0, i)));
+          k = k + n * static_cast<int>(pow(2.0, i));
         }
         else
-          Merge(dest, temp, n*(int)pow(2.0, i), n*(int)pow(2.0, i));
+          Merge(dest, temp, n*static_cast<int>(pow(2.0, i)), n*static_cast<int>(pow(2.0, i)));
       }
     }
     else {
-      if (nrank % (int)pow(2.0, i + 1) != 0 && nrank != (locsize - 1)*(int)pow(2.0, i)) {
-        patner = nrank - (int)pow(2.0, i);
-        MPI_Send(dest.data(), n*(int)pow(2.0, i),
+      if ((nrank % static_cast<int>(pow(2.0, i + 1)) != 0) && (nrank != (locsize - 1)*static_cast<int>(pow(2.0, i)))) {
+        patner = nrank - static_cast<int>(pow(2.0, i));
+        MPI_Send(dest.data(), n*static_cast<int>(pow(2.0, i)),
           MPI_DOUBLE, patner, 0, MPI_COMM_WORLD);
         return 0;
-      }
-      else if (nrank == (locsize - 1)*(int)pow(2.0, i)) {
-        MPI_Send(dest.data(), n*(int)pow(2.0, i),
+      } else if (nrank == (locsize - 1)*static_cast<int>(pow(2.0, i))) {
+        MPI_Send(dest.data(), n*static_cast<int>(pow(2.0, i)),
           MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
         return 0;
-      }
-      else {
+      } else {
         if (nrank == 0) {
-          std::vector<double> temp(n*(int)pow(2.0, i));
-          patner = (locsize - 1)*(int)pow(2.0, i);
+          std::vector<double> temp(n*static_cast<int>(pow(2.0, i)));
+          patner = (locsize - 1)*static_cast<int>(pow(2.0, i));
           MPI_Status status;
-          MPI_Recv(temp.data(), n*(int)pow(2.0, i), MPI_DOUBLE, patner, 0, MPI_COMM_WORLD, &status);
-          Merge(dest, temp, dest.size(), n*(int)pow(2.0, i));
-          k = k + n * (int)pow(2.0, i);
+          MPI_Recv(temp.data(), n*static_cast<int>(pow(2.0, i)), MPI_DOUBLE, patner, 0, MPI_COMM_WORLD, &status);
+          Merge(dest, temp, dest.size(), n*static_cast<int>(pow(2.0, i)));
+          k = k + n * static_cast<int>(pow(2.0, i));
         }
-        std::vector<double> temp(n*(int)pow(2.0, i));
-        patner = nrank + (int)pow(2.0, i);
+        std::vector<double> temp(n*static_cast<int>(pow(2.0, i)));
+        patner = nrank + static_cast<int>(pow(2.0, i));
         MPI_Status status;
-        MPI_Recv(temp.data(), n*(int)pow(2.0, i), MPI_DOUBLE, patner, 0, MPI_COMM_WORLD, &status);
+        MPI_Recv(temp.data(), n*static_cast<int>(pow(2.0, i)), MPI_DOUBLE, patner, 0, MPI_COMM_WORLD, &status);
         if (nrank == 0) {
-          Merge(dest, temp, dest.size(), n*(int)pow(2.0, i));
-          k= k + n * (int)pow(2.0, i);
-        }
-        else
-          Merge(dest, temp, n*(int)pow(2.0, i), n*(int)pow(2.0, i));
+          Merge(dest, temp, dest.size(), n*static_cast<int>(pow(2.0, i)));
+          k= k + n * static_cast<int>(pow(2.0, i));
+        } else
+          Merge(dest, temp, n*static_cast<int>(pow(2.0, i)), n*static_cast<int>(pow(2.0, i)));
       }
     }
     locsize = locsize / 2;

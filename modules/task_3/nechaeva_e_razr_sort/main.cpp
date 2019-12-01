@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <random>
 #include <cassert>
+#include <vector>
 #include "../../../modules/task_3/nechaeva_e_razr_sort/razr_sort.h"
 
 TEST(Razr_Sort, sort_random_vec) {
@@ -24,7 +25,7 @@ TEST(Razr_Sort, sort_pol_vec) {
   std::vector<double> sort = { 1.6, 3.7, 11.5, 30.1 };
   ParallSort(mas, mas.size());
   if (nrank == 0) {
-    ASSERT_EQ(mas,sort);
+    ASSERT_EQ(mas, sort);
   }
 }
 
@@ -55,12 +56,6 @@ TEST(Razr_Sort, sort_neg_and_pol_vec) {
     ASSERT_EQ(mas, sort);
   }
 }
-
-
-
-
-
-
 
 
 
