@@ -59,10 +59,10 @@ std::vector<double> DoubleSortWin(std::vector<double> src, int size) {
   std::vector<double> dest(size);
 
   for (int i = 0; i < 7; i++) {
-   dest = RazrSort(src, dest, i, size);
+    dest = RazrSort(src, dest, i, size);
     std::swap(src, dest);
   }
- dest = RazrSortLast(src, dest, 7, size);
+  dest = RazrSortLast(src, dest, 7, size);
   std::swap(src, dest);
   return src;
 }
