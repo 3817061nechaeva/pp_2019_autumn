@@ -78,7 +78,7 @@ void Rand(std::vector<double> &mas, int size) {
   std::mt19937 generator;
   std::random_device device;
   generator.seed(device());
-  std::uniform_real_distribution<double> distribution(10,100);
+  std::uniform_real_distribution<double> distribution(10, 100);
 
   for (int i = 0; i < size; i++) {
     double f = distribution(generator);
@@ -155,7 +155,6 @@ int ParallSort(std::vector<double> &src, int size) {
   int locsize = nsize;
   int i = 0;
   int patner;
-  int k = n+p;
   while (locsize > 1) {
     if (locsize % 2 == 0) {
       if (nrank % static_cast<int>(pow(2.0, i + 1)) != 0) {
@@ -163,21 +162,17 @@ int ParallSort(std::vector<double> &src, int size) {
         MPI_Send(dest.data(), n*static_cast<int>(pow(2.0, i)),
           MPI_DOUBLE, patner, 0, MPI_COMM_WORLD);
         return 0;
-      }
-      else {
+      }  else {
         std::vector<double> temp(n*static_cast<int>(pow(2.0, i)));
         patner = nrank + static_cast<int>(pow(2.0, i));
         MPI_Status status;
         MPI_Recv(temp.data(), n*static_cast<int>(pow(2.0, i)), MPI_DOUBLE, patner, 0, MPI_COMM_WORLD, &status);
         if (nrank == 0) {
           Merge(dest, temp, dest.size(), n*static_cast<int>(pow(2.0, i)));
-          k = k + n * static_cast<int>(pow(2.0, i));
-        }
-        else
+        } else
           Merge(dest, temp, n*static_cast<int>(pow(2.0, i)), n*static_cast<int>(pow(2.0, i)));
       }
-    }
-    else {
+    } else {
       if ((nrank % static_cast<int>(pow(2.0, i + 1)) != 0) && (nrank != (locsize - 1)*static_cast<int>(pow(2.0, i)))) {
         patner = nrank - static_cast<int>(pow(2.0, i));
         MPI_Send(dest.data(), n*static_cast<int>(pow(2.0, i)),
@@ -194,7 +189,6 @@ int ParallSort(std::vector<double> &src, int size) {
           MPI_Status status;
           MPI_Recv(temp.data(), n*static_cast<int>(pow(2.0, i)), MPI_DOUBLE, patner, 0, MPI_COMM_WORLD, &status);
           Merge(dest, temp, dest.size(), n*static_cast<int>(pow(2.0, i)));
-          k = k + n * static_cast<int>(pow(2.0, i));
         }
         std::vector<double> temp(n*static_cast<int>(pow(2.0, i)));
         patner = nrank + static_cast<int>(pow(2.0, i));
@@ -202,7 +196,6 @@ int ParallSort(std::vector<double> &src, int size) {
         MPI_Recv(temp.data(), n*static_cast<int>(pow(2.0, i)), MPI_DOUBLE, patner, 0, MPI_COMM_WORLD, &status);
         if (nrank == 0) {
           Merge(dest, temp, dest.size(), n*static_cast<int>(pow(2.0, i)));
-          k= k + n * static_cast<int>(pow(2.0, i));
         } else
           Merge(dest, temp, n*static_cast<int>(pow(2.0, i)), n*static_cast<int>(pow(2.0, i)));
       }
