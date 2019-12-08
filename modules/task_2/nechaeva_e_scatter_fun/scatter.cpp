@@ -1,6 +1,7 @@
 // Copyright 2019 Nechaeva Ekaterina
 #include <mpi.h>
 #include <algorithm>
+#include <vector>
 #include "../../../modules/task_2/nechaeva_e_scatter_fun/scatter.h"
 
 int Scatter(void* send_data, int send_count, MPI_Datatype send_datatype, void* recv_data,
@@ -51,7 +52,7 @@ int FasterScatter(void* send_data, int send_count, MPI_Datatype send_datatype, v
       if (i == 1 && rank == 0) {
         memcpy(recv_data, reinterpret_cast<char*>(send_data), send_count * elemSizes);
       }
-      if (rank >= i - 1 && rank < locsize && rank!=0) {
+      if (rank >= i - 1 && rank < locsize && rank != 0) {
         patner = rank - static_cast<int>(pow(2.0, i - 2));
         MPI_Status status;
         MPI_Recv(recv_data, send_count, send_datatype, patner, 0, communicator, &status);
@@ -72,7 +73,6 @@ int FasterScatter(void* send_data, int send_count, MPI_Datatype send_datatype, v
 
 int MyTest(std::vector<int> mas, std::function<int(void*, int, MPI_Datatype, void*,
   int, MPI_Datatype, int, MPI_Comm)> func) {
-
   int size, rank;
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);

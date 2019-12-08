@@ -43,7 +43,7 @@ TEST(MPI_Scatter, effectiv) {
   for (int& i : buf)
     i = ++k;
   max1 = MyTest(buf, FasterScatter);
-  max2= MyTest(buf, MPI_Scatter);
+  max2 = MyTest(buf, MPI_Scatter);
   if (rank == 0) {
     ASSERT_TRUE(max1 == max2);
   }
