@@ -36,7 +36,7 @@ int FasterScatter(void* send_data, int send_count, MPI_Datatype send_datatype, v
   if (send_count <= 0 || recv_count <= 0 || root < 0)
     throw - 1;
   int size, rank;
-  int elemSizer, elemSizes;
+  int elemSizes;
   MPI_Comm_size(communicator, &size);
   MPI_Comm_rank(communicator, &rank);
 

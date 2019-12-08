@@ -12,9 +12,9 @@ TEST(MPI_Scatter, int_to_int) {
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  std::vector<int> buf(10);
-  std::vector<int> buf1(10);
-  std::vector<int> buf2(10);
+  std::vector<int> buf(20);
+  std::vector<int> buf1(20);
+  std::vector<int> buf2(20);
   std::vector<int> recv;
   std::vector<int> scatter;
   for (int& i : buf) {
